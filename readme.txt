@@ -9,4 +9,4 @@ summary per project:
 
 hangman.py: to keep up on my python skills - self explanatory if you know what hangman is
 password_checker: checks if your inputted password would work against the criteria most websites have for their users passwords these days
-threadcomposite: uses threading to determine if certain numbers are composite or not given a file of numbers.
+threadcomposite: uses threading to determine if certain numbers are composite or not given an array of numbers
