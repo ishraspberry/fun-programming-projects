@@ -10,3 +10,4 @@ summary per project:
 hangman.py: to keep up on my python skills - self explanatory if you know what hangman is
 password_checker: checks if your inputted password would work against the criteria most websites have for their users passwords these days
 threadcomposite: uses threading to determine if certain numbers are composite or not given an array of numbers
+musicTime folder: creates a gui for the user to play notes to hear how they sound, and plays all given notes in a sequence!
