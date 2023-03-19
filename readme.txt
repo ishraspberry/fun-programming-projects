@@ -11,4 +11,6 @@ hangman.py: to keep up on my python skills - self explanatory if you know what h
 password_checker: checks if your inputted password would work against the criteria most websites have for their users passwords these days
 threadcomposite: uses threading to determine if certain numbers are composite or not given an array of numbers
 musicTime folder: creates a gui for the user to play notes to hear how they sound, and plays all given notes in a sequence!
-webscraper101.py: My first experience with learning about webscraping and beautiful soup! I wanted to understand the basics, so I made a webscraper that will take in two netflix movie/show links and give let the user know if they share any common genres, cast members or release dates!
+webscraper101.py: My first experience with learning about webscraping and beautiful soup! I wanted to understand the basics, 
+so I made a webscraper that will take in two netflix movie/show links and give let the user know if they share any common genres,
+cast members or release dates!
