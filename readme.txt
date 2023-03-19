@@ -5,7 +5,7 @@ basic programming abilities
 
 I hope this brings you joy!
 
-summary per project:
+**Summary per project:**
 
 hangman.py: to keep up on my python skills - self explanatory if you know what hangman is
 
