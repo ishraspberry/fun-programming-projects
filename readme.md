@@ -17,3 +17,5 @@ I hope this brings you joy!
 
 **webscraper101.py**: My first experience with learning about webscraping and beautiful soup! I wanted to understand the basics, so I made a webscraper
 that will take in two netflix movie/show links and give let the user know if they share any common genres, cast members or release dates!
+
+**honeycharm**: My first discord bot with 14 commands! from games, to weather to a mini pokemon simulation, my bot can do it all :) Endless amounts of fun with honeycharms quirky statements and options and it combines everything I've reviewed so far!
