@@ -14,9 +14,10 @@ List of commands for honeycharm:
 10. boop.pokemon - randomly pulls out icon of a pokemon with their name
 11. boop.touchGrass - uses OpenWeather API to show the temperature over next 7 days and give user the hottest day
 12. boop.pokemon - pokemon catching experience where the user has a 35% chance of seeing a pokemon in the wild grass
-and a 50% chance of capturing it. The pokemon is then saved in a csv file in relation to the user. A user can have up to 15 pokemon at a time
+and the chance of capturing it depends on how high the level of the pokemon is. The pokemon is then saved in a csv file in relation to the user. A user can have up to 15 pokemon at a time
 13. boop.pokepals - allows the user to see all the pokemon they have collected thus 
 14. boop.battle - allows the user to battle another user with the pokemon they have in their respective
-storages. The win is determined off a coin toss at the moment, and the loser loses their pokemon
+storages. The odds of winning is determined off how high each pokemons level is, and the loser loses their pokemon. The winner also levels up by one unless they are at level 100
 15. boop.steal - (boop.steal @discord_user pokemon) allows the discord user to steal a pokemon from a 
 fellow user with a 10% success rate
+16. boop.release - allows user to release a pokemon from their storage
