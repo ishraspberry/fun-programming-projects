@@ -69,10 +69,17 @@ async def pokemon(ctx):
             rand = random.randint(1, 100)
             if rand > 50:
                 file_path = f"pokemon_storage/{ctx.author.name}.csv"
-                with open(file_path, mode="a", newline="") as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerows([[name]])
-                await ctx.send(f"{name} has been caught and added to your pokemon storage. Type boop.pokepals to see all your captures so far!")
+                with open(file_path, mode="r", newline="") as csvfile:
+                    reader = csv.reader(csvfile)
+                    count = sum(1 for row in reader) - 1 
+                if count > 15:
+                    await ctx.send("You have already reached the limit of pokemon you are allowed to catch!")
+                    return
+                else:
+                    with open(file_path, mode="a", newline="") as csvfile:
+                        writer = csv.writer(csvfile)
+                        writer.writerows([[name]])
+                    await ctx.send(f"{name} has been caught and added to your pokemon storage. Type boop.pokepals to see all your captures so far!")
             else:
                 await ctx.send(f"{name} broke out of the pokeball and ran away!")
         else:
@@ -161,7 +168,48 @@ async def battle(ctx, member: discord.Member):
     else:
         await ctx.send(f"{other_user_pokemon} won the battle! As a result, {user_pokemon} ran away from its owner!")
         file_path = f"pokemon_storage/{ctx.author.name}.csv"
-        rip_pokemon(other_user_pokemon, file_path)
+        rip_pokemon(user_pokemon, file_path)
+
+@client.command()
+async def stealpoke(ctx, member: discord.Member, pokemon_name: str):
+    user_file_path = f"pokemon_storage/{ctx.author.name}.csv"
+    if not os.path.exists(user_file_path):
+        await ctx.send("Catch a pokemon in the wild first to activate this feature by using boop.pokemon")
+        return
+
+    # Check if the user being stolen from has a Pokemon storage file
+    victim_file_path = f"pokemon_storage/{member.name}.csv"
+    if not os.path.exists(victim_file_path):
+        await ctx.send(f"{member.name} hasn't caught any Pokemon yet!")
+        return
+    
+    rows = []
+    with open(victim_file_path, mode="r", newline="") as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if row[0] != pokemon_name:
+                rows.append(row)
+            else:
+                stolen_pokemon = row
+
+    if not stolen_pokemon:
+        await ctx.send(f"{member.name} doesn't have a {pokemon_name}!")
+        return
+    else:
+        rand = random.randint(1, 100)
+        if rand < 15:
+            with open(victim_file_path, mode="w", newline="") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerows(rows)
+
+            # Add the stolen Pokemon to the user's storage
+            with open(user_file_path, mode="a", newline="") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerows([pokemon_name])
+
+            await ctx.send(f"{ctx.author.name} has stolen {pokemon_name} from {member.name}!")
+        else:
+            await ctx.send(f"{ctx.author.name} was unable to steal {pokemon_name} from {member.name}! Team rocket frowns upon them!")
     
 @client.event
 async def on_message(message):
