@@ -49,6 +49,7 @@ async def touchGrass(ctx):
     message = get_calgary_weather()
     await ctx.send(message)
 
+#pokemon time!
 @client.command()
 async def pokemon(ctx):
     rand = random.randint(1, 100)
@@ -65,11 +66,11 @@ async def pokemon(ctx):
         embed.set_image(url=image_url)
         await ctx.send(embed=embed)
         await ctx.send("Would you like to catch this pokemon?")
-
+        
+        file_path = f"pokemon_storage/{ctx.author.name}.csv"
         catch_pokemon = await client.wait_for('message', timeout=30.0, check=lambda m: m.author == ctx.author and m.content.lower() in ['yes', 'no'])
         if catch_pokemon.content.lower() == "yes":
             rand = random.randint(1, 100)
-            file_path = f"pokemon_storage/{ctx.author.name}.csv"
             if rand >= level:
                 if os.path.exists(file_path):
                     with open(file_path, mode="r", newline="") as csvfile:
@@ -85,7 +86,32 @@ async def pokemon(ctx):
             else:
                 await ctx.send(f"{name} broke out of the pokeball and ran away!")
         else:
-            await ctx.send(f"{name} got away!")
+            rand = random.randint(1,100)
+            if rand < 90 and os.path.exists(file_path):
+                await ctx.send(f"{name} seems to be very aggressive! it's challenging you to a battle! Pick a pokemon to battle {name} with.")
+                chosen = await choose_pokemon(ctx.author, ctx.channel)
+
+                user_poke_level = int(chosen[1])
+                poke_level = level
+
+                user_probability = user_poke_level / 100.0
+                poke_probability = poke_level / 100.0
+                total_probability = user_probability + poke_probability
+
+                rand = random.uniform(0.0, 1.0)
+                await ctx.send(f"{chosen[0]} is battling {name}!")
+                await asyncio.sleep(2)
+                if rand <= user_probability/total_probability:
+                    await ctx.send(f"{chosen[0]} won the battle! {name} ran back into the grass")
+                    user_poke_level += 1
+                    update_pokemon_level(ctx.author.name, chosen[0], str(user_poke_level), file_path)
+                    await ctx.send(f"{chosen[0]}'s level went up by one!")
+
+                else:
+                    await ctx.send(f"{name} won the battle! {ctx.author.name} quickly fled the scene!")
+                    return
+            else:
+                await ctx.send(f"{name} got away!")
     else:
         await ctx.send("You wandered and wandered the tall grass but no one came near...")
 
@@ -223,7 +249,6 @@ async def battle(ctx, member: discord.Member):
 
         update_pokemon_level(member.name, other_user_pokemon[0], str(other_poke_level), file_path_OTHER)
         await ctx.send(f"{other_user_pokemon[0]}'s level went up by one!")
-    
 
 @client.command()
 async def pokesteal(ctx, member: discord.Member, pokemon_name: str):
@@ -243,21 +268,22 @@ async def pokesteal(ctx, member: discord.Member, pokemon_name: str):
             if row[0].split()[0] != pokemon_name:
                 rows.append(row)
             else:
-                stolen_pokemon = row.split()[0]
+                stolen_pokemon = row[0]
 
     if not stolen_pokemon:
         await ctx.send(f"{member.name} doesn't have a {pokemon_name}!")
         return
     else:
         rand = random.randint(1, 100)
-        if rand < 15:
+        if rand < 17:
             with open(victim_file_path, mode="w", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerows(rows)
 
             with open(user_file_path, mode="a", newline="") as csvfile:
                 writer = csv.writer(csvfile)
-                writer.writerows([pokemon_name])
+                name, level = stolen_pokemon.split(" ")
+                writer.writerows([[f"{name} {level}".replace(",", " ")]])
 
             await ctx.send(f"{ctx.author.name} has stolen {pokemon_name} from {member.name}!")
         else:
