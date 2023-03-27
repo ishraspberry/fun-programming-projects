@@ -201,48 +201,30 @@ async def battle(ctx, member: discord.Member):
     user_poke_level = int(user_pokemon[1])
     other_poke_level = int(other_user_pokemon[1])
 
-    level_diff = abs(user_poke_level-other_poke_level)
-    base_win_prob = 0.5 + level_diff * 0.05
-    
-    # Determine the higher level monster
-    higher_level_guy = "user" if user_poke_level >= other_poke_level else "other"
-    
-    # Add some random variation to the win probability.
-    rand = base_win_prob + random.uniform(-0.4, 0.4)
+    user_probability = user_poke_level / 100.0
+    other_user_probability = other_poke_level / 100.0
+    total_probability = user_probability + other_user_probability
 
+    rand = random.uniform(0.0, 1.0)
     await ctx.send(f"{user_pokemon[0]} is battling {other_user_pokemon[0]}!")
     await asyncio.sleep(2)
-    if rand.random()<rand:
-        if higher_level_guy == "user":
-            await ctx.send(f"{user_pokemon[0]} won the battle! As a result, {other_user_pokemon[0]} ran away from its owner!")
-            user_poke_level += 1
-            rip_pokemon(other_user_pokemon[0], file_path_OTHER)
+    if rand <= user_probability/total_probability:
+        await ctx.send(f"{user_pokemon[0]} won the battle! As a result, {other_user_pokemon[0]} ran away from its owner!")
+        user_poke_level += 1
+        rip_pokemon(other_user_pokemon[0], file_path_OTHER)
             
-            update_pokemon_level(ctx.author.name, user_pokemon[0], str(user_poke_level), file_path_USER)
-            await ctx.send(f"{user_pokemon[0]}'s level went up by one!")
-        else:
-            await ctx.send(f"{other_user_pokemon[0]} won the battle! As a result, {user_pokemon[0]} ran away from its owner!")
-            other_poke_level += 1
-            rip_pokemon(user_pokemon[0], file_path_USER)
+        update_pokemon_level(ctx.author.name, user_pokemon[0], str(user_poke_level), file_path_USER)
+        await ctx.send(f"{user_pokemon[0]}'s level went up by one!")
 
-            update_pokemon_level(member.name, other_user_pokemon[0], str(other_poke_level), file_path_OTHER)
-            await ctx.send(f"{other_user_pokemon[0]}'s level went up by one!")
     else:
-        if higher_level_guy == "user":
-            await ctx.send(f"{other_user_pokemon[0]} won the battle! As a result, {user_pokemon[0]} ran away from its owner!")
-            other_poke_level += 1
-            rip_pokemon(user_pokemon[0], file_path_USER)
+        await ctx.send(f"{other_user_pokemon[0]} won the battle! As a result, {user_pokemon[0]} ran away from its owner!")
+        other_poke_level += 1
+        rip_pokemon(user_pokemon[0], file_path_USER)
 
-            update_pokemon_level(member.name, other_user_pokemon[0], str(other_poke_level), file_path_OTHER)
-            await ctx.send(f"{other_user_pokemon[0]}'s level went up by one!")
-        else:
-            await ctx.send(f"{user_pokemon[0]} won the battle! As a result, {other_user_pokemon[0]} ran away from its owner!")
-            user_poke_level += 1
-            rip_pokemon(other_user_pokemon[0], file_path_OTHER)
-            
-            update_pokemon_level(ctx.author.name, user_pokemon[0], str(user_poke_level), file_path_USER)
-            await ctx.send(f"{user_pokemon[0]}'s level went up by one!")
-            
+        update_pokemon_level(member.name, other_user_pokemon[0], str(other_poke_level), file_path_OTHER)
+        await ctx.send(f"{other_user_pokemon[0]}'s level went up by one!")
+    
+
 @client.command()
 async def pokesteal(ctx, member: discord.Member, pokemon_name: str):
     user_file_path = f"pokemon_storage/{ctx.author.name}.csv"
